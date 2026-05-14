@@ -1,5 +1,3 @@
-logger_sources = [
-  'src/Logger.cpp',
-  'src/ConsoleSink.cpp',
-  'src/RotatingFileSink.cpp',
+file_wrapper_sources = [
+  'src/FileWrapper.cpp',
 ]

@@ -3,6 +3,7 @@
 
 #include <fstream>
 #include <mutex>
+#include <iostream>
 
 class FileWrapper
 {
@@ -23,6 +24,18 @@ class FileWrapper
     bool isOpen();
 
     const std::string& getFileName();
+
+    template <typename T>
+    FileWrapper& operator<<(const T &x)
+    {
+      if (isOpen())
+      {
+        std::lock_guard<std::mutex> lock(m_mutex);
+        std::cout << "Writing " << x << " to file\n";
+        m_fileStream << x;
+      }
+      return *this;
+    }
 
   private:
     /**

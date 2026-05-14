@@ -1,6 +1,6 @@
-executable('logger_example',
+executable('file_example',
   'main.cpp',
   include_directories: include_directories('../include'),
-  link_with: logger_lib,
+  link_with: file_wrapper_lib,
   install: true
 )

@@ -1,51 +1,33 @@
-#include "Logger.h"
-#include "ConsoleSink.h"
-#include "RotatingFileSink.h"
+#include "FileWrapper.h"
 #include <thread>
 #include <string.h>
 #include <math.h>
 #include <sstream>
+#include <vector>
 
-int randi(int lo, int hi)
+FileWrapper file;
+
+void task(uint32_t index)
 {
-    int n = hi - lo + 1;
-    int i = rand() % n;
-    if (i < 0) i = -i;
-    return lo + i;
-}
-
-void task(const std::string& message, int delay)
-{
-    auto& logger = Logger::instance();
-
-    std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-
-    logger.log(LogLevel::ERROR, message);
+    file << index << "\n";
 }
 
 int main() {
-    auto& logger = Logger::instance();
-
-    logger.addSink(std::make_shared<ConsoleSink>());
-    logger.addSink(std::make_shared<RotatingFileSink>("app.log"));
-
-    logger.log(LogLevel::INFO, "Program started with rotating file logger.");
-
     std::vector<std::thread> _threads;
-    const std::string messageTemplate = "Logging On Thread: ";
+    const std::string messageTemplate = "Working on file On Thread: ";
+
+    file.openFile("./out.txt");
     for (uint32_t idx = 0U; idx < 1'000U; ++idx)
     {
         std::stringstream message;
         message << messageTemplate << idx;
-        _threads.emplace_back(std::thread(task, message.str(), randi(0, 100)));
+        _threads.emplace_back(std::thread(task, idx));
     }
 
     for (auto& th : _threads)
     {
         th.join();
     }
-
-    logger.shutdown();
 
     return 0;
 }

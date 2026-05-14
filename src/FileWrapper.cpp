@@ -11,30 +11,36 @@ FileWrapper::~FileWrapper()
 
 bool FileWrapper::openFile(const std::string& fileName)
 {
-    if (m_fileStream.is_open())
+    std::lock_guard<std::mutex> guard(m_mutex);
+    if (isOpen())
     {
         return false;
     }
 
-    m_fileStream.open(fileName, std::ios::in | std::ios::out);
+    std::cout << "Opening file\n";
+    m_fileStream.open(fileName, std::ios::in | std::ios::app);
     m_fileName = fileName;
     return m_fileStream.is_open();
 }
 
 void FileWrapper::closeFile()
 {
-    if (m_fileStream.is_open())
+    std::lock_guard<std::mutex> guard(m_mutex);
+    if (isOpen())
     {
         m_fileStream.close();
+        m_fileName = "";
     }
 }
 
 bool FileWrapper::isOpen()
 {
-    return false;
+    std::lock_guard<std::mutex> guard(m_mutex);
+    return m_fileStream.is_open();
 }
 
 const std::string& FileWrapper::getFileName()
 {
+    std::lock_guard<std::mutex> guard(m_mutex);
     return m_fileName;
 }
