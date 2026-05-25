@@ -4,6 +4,7 @@
 #include <fstream>
 #include <mutex>
 #include <iostream>
+#include <syncstream>
 
 class FileWrapper
 {
@@ -28,13 +29,14 @@ class FileWrapper
     template <typename T>
     FileWrapper& operator<<(const T &x)
     {
-      if (isOpen())
-      {
         std::lock_guard<std::mutex> lock(m_mutex);
-        std::cout << "Writing " << x << " to file\n";
-        m_fileStream << x;
-      }
-      return *this;
+
+        if (isOpen())
+        {
+            m_cout << "Writing " << x << " to file\n";
+            m_fileStream << x;
+        }
+        return *this;
     }
 
   private:
@@ -51,6 +53,8 @@ class FileWrapper
     std::fstream m_fileStream;  //!< File stream for reading/writing
     std::string m_fileName;     //!< Name of the file open
     std::mutex  m_mutex;        //!< Mutex for thread-safety
+
+    std::osyncstream m_cout;    //!< osyncstream for thread-safe cout
 };
 
 #endif // FILE_WRAPPER_H

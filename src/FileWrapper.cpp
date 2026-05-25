@@ -1,6 +1,6 @@
 #include "FileWrapper.h"
 
-FileWrapper::FileWrapper() : m_fileName(), m_fileStream(), m_mutex()
+FileWrapper::FileWrapper() : m_fileStream(), m_fileName(), m_mutex(), m_cout(std::cout)
 {
 }
 
@@ -17,7 +17,7 @@ bool FileWrapper::openFile(const std::string& fileName)
         return false;
     }
 
-    std::cout << "Opening file\n";
+    m_cout << "Opening file\n";
     m_fileStream.open(fileName, std::ios::in | std::ios::app);
     m_fileName = fileName;
     return m_fileStream.is_open();
@@ -35,7 +35,6 @@ void FileWrapper::closeFile()
 
 bool FileWrapper::isOpen()
 {
-    std::lock_guard<std::mutex> guard(m_mutex);
     return m_fileStream.is_open();
 }
 
