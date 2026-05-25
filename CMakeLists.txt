@@ -30,7 +30,10 @@ target_link_libraries(FileWrapperTests
   NucleusFileManagement
   gtest
   gtest_main
-  pthread
 )
+
+if(UNIX)
+  target_link_libraries(FileWrapperTests PRIVATE pthread)
+endif()
 
 add_test(NAME FileWrapperTests COMMAND FileWrapperTests)
