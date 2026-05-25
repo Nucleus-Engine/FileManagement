@@ -1,37 +1,41 @@
 cmake_minimum_required(VERSION 3.15)
-project(NucleusLogging)
+project(NucleusFileManagement)
 
 set(CMAKE_CXX_STANDARD 17)
 
-# Configurable log level
-set(LOG_LEVEL "INFO" CACHE STRING "Default log level: DEBUG, INFO, WARN, ERROR, or FATAL")
-
-# Map string to enum
-if(LOG_LEVEL STREQUAL "DEBUG")
-    set(LOG_LEVEL_ENUM "LogLevel::DEBUG")
-elseif(LOG_LEVEL STREQUAL "INFO")
-    set(LOG_LEVEL_ENUM "LogLevel::INFO")
-elseif(LOG_LEVEL STREQUAL "WARN")
-    set(LOG_LEVEL_ENUM "LogLevel::WARN")
-elseif(LOG_LEVEL STREQUAL "ERROR")
-    set(LOG_LEVEL_ENUM "LogLevel::ERROR")
-elseif(LOG_LEVEL STREQUAL "FATAL")
-    set(LOG_LEVEL_ENUM "LogLevel::FATAL")
-else()
-    message(FATAL_ERROR "Invalid LOG_LEVEL: ${LOG_LEVEL}")
-endif()
-
 # Add logger library
-add_library(NucleusLogging
-    src/Logger.cpp
-    src/ConsoleSink.cpp
-    src/RotatingFileSink.cpp
+add_library(NucleusFileManagement src/FileWrapper.cpp
 )
 
-target_include_directories(NucleusLogging PUBLIC include)
-
-# Pass the log level macro to the compiler
-target_compile_definitions(NucleusLogging PUBLIC DEFAULT_LOG_LEVEL=${LOG_LEVEL_ENUM})
+target_include_directories(NucleusFileManagement PUBLIC include)
 
 add_executable(example examples/main.cpp)
-target_link_libraries(example NucleusLogging)
+target_link_libraries(example NucleusFileManagement)
+
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  GIT_REPOSITORY https://github.com/google/googletest.git
+  GIT_TAG v1.15.2
+)
+
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
+
+enable_testing()
+
+find_package(GTest REQUIRED)
+
+add_executable(FileWrapperTests
+    tests/FileWrapperTest.cpp
+)
+
+target_link_libraries(FileWrapperTests
+    PRIVATE
+        FileManagement
+        GTest::GTest
+        GTest::Main
+        pthread
+)
+
+add_test(NAME FileWrapperTests COMMAND FileWrapperTests)
