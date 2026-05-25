@@ -17,7 +17,7 @@ int main() {
     const std::string messageTemplate = "Working on file On Thread: ";
 
     file.openFile("./out.txt");
-    for (uint32_t idx = 0U; idx < 1'000U; ++idx)
+    for (uint32_t idx = 0U; idx < 1000U; ++idx)
     {
         std::stringstream message;
         message << messageTemplate << idx;
