@@ -3,26 +3,19 @@
 
 #include <fstream>
 #include <mutex>
+#include <string>
 #include <iostream>
-#include <syncstream>
 
 class FileWrapper
 {
-  public:
-    /**
-     * @brief Construct a new File Wrapper object
-     */
+public:
     FileWrapper();
-
-    /**
-     * @brief Destroy the File Wrapper object
-     */
     virtual ~FileWrapper();
 
     bool openFile(const std::string& fileName);
     void closeFile();
 
-    bool isOpen();
+    bool isOpen() const;
 
     const std::string& getFileName();
 
@@ -33,28 +26,18 @@ class FileWrapper
 
         if (isOpen())
         {
-            m_cout << "Writing " << x << " to file\n";
-            m_fileStream << x;
+            m_fileStream << x << '\n';
         }
         return *this;
     }
 
-  private:
-    /**
-     * @brief Deleted copy constructor to prevent copy
-     */
+private:
     FileWrapper(const FileWrapper& other) = delete;
-
-    /**
-     * @brief Assignment operator deleted to prevent assignment
-     */
     FileWrapper& operator=(const FileWrapper& other) = delete;
 
-    std::fstream m_fileStream;  //!< File stream for reading/writing
-    std::string m_fileName;     //!< Name of the file open
-    std::mutex  m_mutex;        //!< Mutex for thread-safety
-
-    std::osyncstream m_cout;    //!< osyncstream for thread-safe cout
+    std::fstream    m_fileStream;
+    std::string     m_fileName;
+    std::mutex      m_mutex;
 };
 
 #endif // FILE_WRAPPER_H

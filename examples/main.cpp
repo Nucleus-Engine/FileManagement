@@ -9,7 +9,7 @@ FileWrapper file;
 
 void task(uint32_t index)
 {
-    file << index << "\n";
+    file << index;
 }
 
 int main() {
