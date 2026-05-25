@@ -40,3 +40,7 @@ build
 
 # Logs
 *.log
+
+# Meson subprojects
+subprojects
+!subprojects.*.wrap
