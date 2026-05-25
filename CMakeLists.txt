@@ -3,7 +3,6 @@ project(NucleusFileManagement)
 
 set(CMAKE_CXX_STANDARD 17)
 
-# Add logger library
 add_library(NucleusFileManagement src/FileWrapper.cpp
 )
 
@@ -18,24 +17,20 @@ FetchContent_Declare(
   GIT_REPOSITORY https://github.com/google/googletest.git
   GIT_TAG v1.15.2
 )
-
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
-find_package(GTest REQUIRED)
-
 add_executable(FileWrapperTests
-    tests/FileWrapperTest.cpp
+  tests/FileWrapperTest.cpp
 )
-
 target_link_libraries(FileWrapperTests
-    PRIVATE
-        FileManagement
-        GTest::GTest
-        GTest::Main
-        pthread
+  PRIVATE
+  NucleusFileManagement
+  gtest
+  gtest_main
+  pthread
 )
 
 add_test(NAME FileWrapperTests COMMAND FileWrapperTests)
