@@ -11,3 +11,4 @@ install_headers('include/FileWrapper.h',
                 subdir: 'NucleusFileWrapper')
 
 subdir('examples')
+subdir('tests')
